@@ -70,7 +70,7 @@ footer{text-align:center;color:var(--gold-lt);font-size:14px;margin-top:30px}
   </div>
   <div class="avisos" id="avisos">
     <div class="xtree" aria-hidden="true"><span class="st">⭐</span><svg viewBox="0 0 110 140"><polygon points="55,22 90,70 72,70 100,108 10,108 38,70 20,70" fill="#1f7a3d" stroke="#0d3d1c" stroke-width="3" stroke-linejoin="round"/><rect x="45" y="108" width="20" height="22" fill="#8a4b1e" stroke="#4d2a10" stroke-width="3"/><circle class="l" cx="55" cy="50" r="5"/><circle class="l" cx="42" cy="72" r="5"/><circle class="l" cx="68" cy="80" r="5"/><circle class="l" cx="30" cy="98" r="5"/><circle class="l" cx="55" cy="96" r="5"/><circle class="l" cx="80" cy="100" r="5"/></svg></div>
-    <div class="postit" id="postit"><b>📌 Aviso!</b>No dia 15/12 vamos liberar todos os recadinhos. Os que já foram aprovados estão aqui. Volte em dezembro para ler os outros!</div>
+    <div class="postit" id="postit"><b>📌 Aviso!</b>Em dezembro (dia 15/12) vamos liberar todos os recadinhos. Volte aqui para ler!</div>
   </div>
   <div class="bar"><span class="count" id="count">Carregando...</span><a class="back" href="index.html">✍️ Deixar um recadinho</a></div>
   <div id="status" class="msgbox" role="status">Carregando os recados...</div>
@@ -121,7 +121,7 @@ function card(it, i) {
   p.appendChild(el("span", "mark", it.pessoa || "Quem cuida de nós"));
   var m = el("p", "msg", "“" + it.recado + "”");
   var d = el("div", "de"); d.appendChild(el("small", null, "De"));
-  d.appendChild(el("span", "pill", it.nome + (it.turma ? " · " + it.turma : "")));
+  d.appendChild(el("span", "pill", String(it.nome).trim().split(/\s+/)[0] + (it.turma ? " · " + it.turma : "")));
   a.appendChild(p); a.appendChild(m); a.appendChild(d);
   return a;
 }
@@ -141,8 +141,8 @@ function carregar() {
     var b = el("button", null, "Tentar de novo"); b.onclick = carregar; st.appendChild(b);
   });
 }
-if (new Date() >= new Date(2026, 11, 15)) { document.getElementById("postit").hidden = true; }
-carregar();
+if (new Date() >= new Date(2026, 11, 15)) { document.getElementById("avisos").hidden = true; carregar(); }
+else { document.getElementById("status").hidden = true; document.getElementById("count").hidden = true; }
 </script>
 </body>
 </html>
