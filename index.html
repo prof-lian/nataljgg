@@ -102,9 +102,9 @@ footer{position:relative;z-index:1;text-align:center;color:var(--gold-lt);font-s
 
     <form class="card" id="form" novalidate>
       <fieldset>
-        <label class="q" for="nome">Seu primeiro nome</label>
+        <label class="q" for="nome">Seu nome completo</label>
         <p class="hint">Só o primeiro nome e a turma vão aparecer no mural.</p>
-        <input type="text" id="nome" name="nome" maxlength="30" autocomplete="given-name" required>
+        <input type="text" id="nome" name="nome" maxlength="60" autocomplete="name" required>
         <p class="err" data-for="nome"></p>
       </fieldset>
 
@@ -247,9 +247,9 @@ form.addEventListener('submit', function (ev) {
   ["nome", "tipo", "turno", "turma", "recado"].forEach(function (k) { setErr(k, ""); });
   document.getElementById('geral').textContent = "";
   if (d.get('site')) return; /* anti-robô */
-  var nome = (d.get('nome') || "").trim().split(/\s+/)[0];
+  var nome = (d.get('nome') || "").trim().replace(/\s+/g, ' ');
   var tipo = val('tipo');
-  if (!nome) { setErr('nome', 'Escreva seu primeiro nome.'); ok = false; }
+  if (!nome) { setErr('nome', 'Escreva seu nome.'); ok = false; }
   if (!tipo) { setErr('tipo', 'Escolha quem você é.'); ok = false; }
   if (tipo === 'Aluno') {
     if (!val('turno')) { setErr('turno', 'Escolha o turno.'); ok = false; }
