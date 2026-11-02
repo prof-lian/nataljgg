@@ -152,7 +152,7 @@ function linha(x) {
   i.onchange = function () {
     var novo = i.checked; i.disabled = true;
     chama({ acao: "aprovar", ids: x.id, valor: novo ? "1" : "0" }).then(function () {
-      x.aprovado = novo; toast(novo ? "Aprovado ✓" : "Removido da página"); desenha();
+      x.aprovado = novo; toast(novo ? "Aprovado ✓ Foi para a aba Aprovados" : "Voltou para Pendentes"); desenha();
     }).catch(function (e) { i.checked = !novo; i.disabled = false; $("eLista").textContent = e.message; });
   };
   var m = el("div");
