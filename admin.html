@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin · Recados de Natal</title>
+<style>
+:root{--green:#306531;--green-dk:#234a24;--red:#ff3131;--red-dk:#c62020;--navy:#0b4072;--gold:#d9a93a;--gold-lt:#f6e3ad;--ink:#1b1a2e;--cream:#fffaf0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--green);color:var(--ink);font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:18px;line-height:1.45;overflow-x:hidden}
+[hidden]{display:none!important}
+body{background:#f3efe4}
+.top{background:var(--green);color:#fff;padding:14px 16px;border-bottom:6px solid var(--red)}
+.top .in{max-width:980px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.top h1{margin:0;font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px}
+.wrap{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+.box{background:#fff;border:2px solid var(--navy);border-radius:10px;padding:18px}
+.login{max-width:420px;margin:40px auto}
+.login h2{margin:0 0 10px;font-family:'Montserrat',sans-serif;color:var(--navy)}
+input[type=password],input[type=search]{width:100%;font:inherit;border:2px solid var(--navy);border-radius:8px;padding:11px;background:#fff}
+button,.lnk{font:inherit;font-family:'Montserrat',sans-serif;font-weight:700;border:2px solid var(--ink);border-radius:8px;background:var(--gold);color:var(--ink);padding:9px 14px;cursor:pointer;text-decoration:none;font-size:15px;display:inline-block}
+button.pri{background:var(--red-dk);color:#fff;border-color:#8f1414;width:100%;margin-top:12px;font-size:17px;padding:12px}
+button.ghost,.lnk.ghost{background:#fff}
+button.danger{background:#fff;color:#b00020;border-color:#b00020}
+button:disabled{opacity:.55;cursor:default}
+.err{color:#b00020;font-weight:700;margin:10px 0 0;min-height:1.2em}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{background:#fff}
+.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.grow{flex:1 1 200px}
+.sum{color:#566070;font-size:15px;margin:0 0 10px}
+.row{background:#fff;border:2px solid #cfc7b4;border-left:8px solid #cfc7b4;border-radius:10px;padding:14px;margin-bottom:12px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:start}
+.row.ap{border-left-color:var(--green);border-color:#b9d4bb;background:#f4fbf4}
+.chk{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;min-width:62px}
+.chk input{width:30px;height:30px;accent-color:var(--green);cursor:pointer}
+.meta{font-size:14px;color:#566070}
+.who{font-weight:800;font-family:'Montserrat',sans-serif;color:var(--navy);font-size:17px}
+.para b{background:#ffe872;padding:1px 8px;border-radius:5px}
+.msg{margin:8px 0 4px;font-size:18px;white-space:pre-wrap;word-break:break-word}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:560px){.row{grid-template-columns:auto 1fr} .row .del{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><h1>🎄 Admin · Recados de Natal</h1><div id="acoes" hidden><a class="lnk ghost" href="recados.html" target="_blank" rel="noopener">Ver página de recados</a> <button type="button" class="ghost" id="sair">Sair</button></div></div></div>
+
+<div class="wrap">
+  <div class="box login" id="login">
+    <h2>Entrar</h2>
+    <p style="margin:0 0 10px">Digite a senha de administrador.</p>
+    <form id="fLogin"><input type="password" id="senha" autocomplete="current-password" aria-label="Senha"><button class="pri" type="submit" id="bEntrar">Entrar</button></form>
+    <p class="err" id="eLogin" role="alert"></p>
+  </div>
+
+  <div id="painel" hidden>
+    <div class="tools">
+      <div class="tabs" id="tabs"></div>
+      <input type="search" class="grow" id="busca" placeholder="Buscar por nome, turma, pessoa ou texto" aria-label="Buscar">
+      <button type="button" id="aprovaTodos">✔ Aprovar pendentes visíveis</button>
+      <button type="button" class="ghost" id="recarrega">↻ Atualizar</button>
+    </div>
+    <p class="sum" id="sum"></p>
+    <div id="lista"></div>
+    <p class="err" id="eLista" role="alert"></p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbxoXQxjCWOmOmIiKeBYkK7uqR0fkA1xn2Db5UGVEJjHINZ5rSN8tk4GAifzJX40F0Q/exec";
+function api(params) {
+  return new Promise(function (resolve, reject) {
+    var cb = "cb" + Date.now() + Math.floor(Math.random() * 1e6);
+    var u = new URL(ENDPOINT);
+    Object.keys(params).forEach(function (k) { u.searchParams.set(k, params[k]); });
+    u.searchParams.set("callback", cb);
+    var s = document.createElement("script");
+    var t = setTimeout(function () { limpa(); reject(new Error("Tempo esgotado. Tente de novo.")); }, 20000);
+    function limpa() { clearTimeout(t); delete window[cb]; s.remove(); }
+    window[cb] = function (d) { limpa(); resolve(d); };
+    s.onerror = function () { limpa(); reject(new Error("Falha de rede.")); };
+    s.src = u.toString();
+    document.head.appendChild(s);
+  });
+}
+
+var senha = "", itens = [], aba = "pend";
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function toast(t) { var x = $("toast"); x.textContent = t; x.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(function () { x.classList.remove("on"); }, 1800); }
+function chama(p) { p.senha = senha; return api(p).then(function (r) { if (!r.ok) throw new Error(r.erro || "Erro"); return r; }); }
+
+function entrar(s) {
+  senha = s; $("eLogin").textContent = ""; $("bEntrar").disabled = true; $("bEntrar").textContent = "Entrando...";
+  return chama({ acao: "todos" }).then(function (r) {
+    try { sessionStorage.setItem("natalSenha", s); } catch (e) {}
+    itens = r.itens; $("login").hidden = true; $("painel").hidden = false; $("acoes").hidden = false; desenha();
+  }).catch(function (e) {
+    senha = ""; try { sessionStorage.removeItem("natalSenha"); } catch (x) {}
+    $("eLogin").textContent = e.message;
+  }).then(function () { $("bEntrar").disabled = false; $("bEntrar").textContent = "Entrar"; });
+}
+$("fLogin").addEventListener("submit", function (ev) { ev.preventDefault(); if ($("senha").value) entrar($("senha").value); });
+$("sair").addEventListener("click", function () { try { sessionStorage.removeItem("natalSenha"); } catch (e) {} location.reload(); });
+$("recarrega").addEventListener("click", function () { chama({ acao: "todos" }).then(function (r) { itens = r.itens; desenha(); toast("Atualizado"); }).catch(function (e) { $("eLista").textContent = e.message; }); });
+$("busca").addEventListener("input", desenha);
+
+function visiveis() {
+  var q = $("busca").value.trim().toLowerCase();
+  return itens.filter(function (x) {
+    if (aba === "pend" && x.aprovado) return false;
+    if (aba === "apr" && !x.aprovado) return false;
+    if (!q) return true;
+    return (x.nome + " " + x.turma + " " + x.pessoa + " " + x.recado).toLowerCase().indexOf(q) >= 0;
+  });
+}
+
+function desenha() {
+  var np = itens.filter(function (x) { return !x.aprovado; }).length, na = itens.length - np;
+  var tabs = $("tabs"); tabs.innerHTML = "";
+  [["pend", "Pendentes (" + np + ")"], ["apr", "Aprovados (" + na + ")"], ["todos", "Todos (" + itens.length + ")"]].forEach(function (t) {
+    var b = el("button", aba === t[0] ? "on" : "", t[1]); b.type = "button";
+    b.onclick = function () { aba = t[0]; desenha(); }; tabs.appendChild(b);
+  });
+  var v = visiveis();
+  $("sum").textContent = "Mostrando " + v.length + " de " + itens.length + ". Marque “Aprovado” para o recado aparecer na página de recados.";
+  $("aprovaTodos").disabled = !v.some(function (x) { return !x.aprovado; });
+  var l = $("lista"); l.innerHTML = "";
+  if (!v.length) { l.appendChild(el("div", "box", itens.length ? "Nenhum recado nesta lista." : "Ainda não chegou nenhum recadinho.")); return; }
+  v.forEach(function (x) { l.appendChild(linha(x)); });
+}
+
+function fmt(d) { var t = new Date(d); return isNaN(t) ? d : t.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); }
+
+function linha(x) {
+  var r = el("div", "row" + (x.aprovado ? " ap" : ""));
+  var c = el("label", "chk"); var i = el("input"); i.type = "checkbox"; i.checked = x.aprovado;
+  c.appendChild(i); c.appendChild(el("span", null, "Aprovado"));
+  i.onchange = function () {
+    var novo = i.checked; i.disabled = true;
+    chama({ acao: "aprovar", ids: x.id, valor: novo ? "1" : "0" }).then(function () {
+      x.aprovado = novo; toast(novo ? "Aprovado ✓" : "Removido da página"); desenha();
+    }).catch(function (e) { i.checked = !novo; i.disabled = false; $("eLista").textContent = e.message; });
+  };
+  var m = el("div");
+  m.appendChild(el("div", "who", x.nome + (x.turma ? " · " + x.turma : "")));
+  var p = el("div", "para meta"); p.appendChild(document.createTextNode("Para: ")); p.appendChild(el("b", null, x.pessoa || "(sem nome)")); p.appendChild(document.createTextNode("  ·  " + fmt(x.data)));
+  m.appendChild(p); m.appendChild(el("p", "msg", x.recado));
+  var d = el("div", "del"); var b = el("button", "danger", "Excluir"); b.type = "button";
+  b.onclick = function () {
+    if (!confirm("Excluir este recado de " + x.nome + "? Isso apaga a linha da planilha.")) return;
+    chama({ acao: "excluir", id: x.id }).then(function () { itens = itens.filter(function (y) { return y !== x; }); toast("Excluído"); desenha(); })
+      .catch(function (e) { $("eLista").textContent = e.message; });
+  };
+  d.appendChild(b);
+  r.appendChild(c); r.appendChild(m); r.appendChild(d);
+  return r;
+}
+
+$("aprovaTodos").addEventListener("click", function () {
+  var pend = visiveis().filter(function (x) { return !x.aprovado; });
+  if (!pend.length || !confirm("Aprovar " + pend.length + " recado(s) pendente(s) desta lista?")) return;
+  var lotes = [], i; for (i = 0; i < pend.length; i += 30) lotes.push(pend.slice(i, i + 30));
+  $("aprovaTodos").disabled = true;
+  lotes.reduce(function (p, lote) {
+    return p.then(function () { return chama({ acao: "aprovar", ids: lote.map(function (x) { return x.id; }).join(","), valor: "1" }).then(function () { lote.forEach(function (x) { x.aprovado = true; }); }); });
+  }, Promise.resolve()).then(function () { toast(pend.length + " aprovados ✓"); desenha(); })
+    .catch(function (e) { $("eLista").textContent = e.message; desenha(); });
+});
+
+try { var guardada = sessionStorage.getItem("natalSenha"); if (guardada) entrar(guardada); } catch (e) {}
+</script>
+</body>
+</html>
