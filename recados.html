@@ -44,6 +44,20 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 16px 4
 .msgbox{text-align:center;color:#fff;font-size:19px;padding:30px 10px}
 .msgbox button{font:inherit;font-weight:800;border:0;border-radius:10px;background:var(--gold);color:var(--ink);padding:10px 20px;cursor:pointer;margin-top:10px}
 footer{text-align:center;color:var(--gold-lt);font-size:14px;margin-top:30px}
+.avisos{display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:center;margin:6px 0 22px}
+.xtree{position:relative;width:110px;height:140px;flex:none}
+.xtree .st{position:absolute;left:50%;top:0;transform:translateX(-50%);font-size:26px;line-height:1;animation:pisca 1.2s infinite}
+.xtree .t{position:absolute;left:50%;transform:translateX(-50%);background:#1f7a3d;border:3px solid #0d3d1c;clip-path:none}
+.xtree svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.xtree .l{animation:pisca 1s infinite}
+.xtree .l:nth-child(3n){animation-delay:.33s;fill:#ff3131}
+.xtree .l:nth-child(3n+1){animation-delay:.66s;fill:#ffd23f}
+.xtree .l:nth-child(3n+2){animation-delay:0s;fill:#6ec6ff}
+@keyframes pisca{0%,100%{opacity:1;filter:drop-shadow(0 0 5px currentColor)}50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.xtree .l,.xtree .st{animation:none}}
+.postit{max-width:380px;background:#ffe872;color:#1b1a2e;padding:20px 22px;box-shadow:0 10px 20px rgba(0,0,0,.35);transform:rotate(-2deg);font-family:'Caveat','Atkinson Hyperlegible',cursive;font-size:26px;line-height:1.2;position:relative}
+.postit:before{content:"";position:absolute;top:-12px;left:50%;width:70px;height:22px;transform:translateX(-50%) rotate(2deg);background:rgba(255,255,255,.55)}
+.postit b{font-family:'Montserrat',sans-serif;font-size:19px;display:block;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -53,6 +67,10 @@ footer{text-align:center;color:var(--gold-lt);font-size:14px;margin-top:30px}
   <div class="lead">
     <h1>Recados de <span>Natal</span></h1>
     <p>Mensagens de carinho para quem faz a nossa escola funcionar todos os dias.</p>
+  </div>
+  <div class="avisos" id="avisos">
+    <div class="xtree" aria-hidden="true"><span class="st">⭐</span><svg viewBox="0 0 110 140"><polygon points="55,22 90,70 72,70 100,108 10,108 38,70 20,70" fill="#1f7a3d" stroke="#0d3d1c" stroke-width="3" stroke-linejoin="round"/><rect x="45" y="108" width="20" height="22" fill="#8a4b1e" stroke="#4d2a10" stroke-width="3"/><circle class="l" cx="55" cy="50" r="5"/><circle class="l" cx="42" cy="72" r="5"/><circle class="l" cx="68" cy="80" r="5"/><circle class="l" cx="30" cy="98" r="5"/><circle class="l" cx="55" cy="96" r="5"/><circle class="l" cx="80" cy="100" r="5"/></svg></div>
+    <div class="postit" id="postit"><b>📌 Aviso!</b>No dia 15/12 vamos liberar todos os recadinhos. Os que já foram aprovados estão aqui. Volte em dezembro para ler os outros!</div>
   </div>
   <div class="bar"><span class="count" id="count">Carregando...</span><a class="back" href="index.html">✍️ Deixar um recadinho</a></div>
   <div id="status" class="msgbox" role="status">Carregando os recados...</div>
@@ -123,6 +141,7 @@ function carregar() {
     var b = el("button", null, "Tentar de novo"); b.onclick = carregar; st.appendChild(b);
   });
 }
+if (new Date() >= new Date(2026, 11, 15)) { document.getElementById("postit").hidden = true; }
 carregar();
 </script>
 </body>
