@@ -60,7 +60,7 @@ footer{text-align:center;color:var(--gold-lt);font-size:14px;margin-top:30px}
   <footer>Escola Municipal Cívico-Militar Prof. José Geraldo Guimarães · Natal 2026<br>Dúvidas ou sugestões - Professor Lian de Informática</footer>
 </main>
 <script>
-var ENDPOINT = "https://script.google.com/macros/s/AKfycbxoXQxjCWOmOmIiKeBYkK7uqR0fkA1xn2Db5UGVEJjHINZ5rSN8tk4GAifzJX40F0Q/exec";
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbyNUNzImNnldLxk3xa6aMGZ3eaM3pAsIS-XCnmDq1ODRmJzmyxa0Zn_GpINAC3ZrTw/exec";
 function api(params) {
   return new Promise(function (resolve, reject) {
     var cb = "cb" + Date.now() + Math.floor(Math.random() * 1e6);
@@ -71,7 +71,7 @@ function api(params) {
     var t = setTimeout(function () { limpa(); reject(new Error("Tempo esgotado. Tente de novo.")); }, 20000);
     function limpa() { clearTimeout(t); delete window[cb]; s.remove(); }
     window[cb] = function (d) { limpa(); resolve(d); };
-    s.onerror = function () { limpa(); reject(new Error("Falha de rede.")); };
+    s.onerror = function () { limpa(); reject(new Error("Não consegui falar com a planilha. Confira se a implantação está como Qualquer pessoa e se usou a Nova versão.")); };
     s.src = u.toString();
     document.head.appendChild(s);
   });
